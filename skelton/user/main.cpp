@@ -2,9 +2,14 @@
 
 #include <intrinsics.h>
 
-int main()
+int main(int argc, char* argv[])
 {
-    auto ret = ::intel_x64::vm::call(0x1234);
+    int rax = 0;
+    if (argc >= 2) {
+        rax = atoi(argv[1]);
+    }
 
-    std::clog << ret << '\n';
+    auto ret = ::intel_x64::vm::call(rax);
+
+    std::cout << "rax=" << rax << ", ret=" << ret << '\n';
 }

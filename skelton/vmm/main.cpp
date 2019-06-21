@@ -17,8 +17,11 @@ bool vmcall_handler(vcpu_t *vcpu)
     bfignored(vcpu);
 
     guard_exceptions([&] {
-        if (vcpu->rax() == 0x1234) {
-            bfdebug_ndec(0, "vmcall: ", vcpu->rax());
+        bfdebug_ndec(0, "vmcall: ", vcpu->rax());
+        if (vcpu->rax() == 1234) {
+            vcpu->set_rax(0);
+        } else {
+            vcpu->set_rax(1);
         }
     });
 
@@ -28,10 +31,10 @@ bool vmcall_handler(vcpu_t *vcpu)
 
 void vcpu_init_nonroot(vcpu_t *vcpu)
 {
-    using namespace vmcs_n::exit_reason::basic_exit_reason;
+    using namespace vmcs_n::exit_reason;
 
     bfdebug_info(0, "vcpu init nonroot");
-    vcpu->add_handler(cpuid, ::vmcall_handler);
+    vcpu->add_handler(basic_exit_reason::vmcall, ::vmcall_handler);
 }
 
 void vcpu_fini_nonroot(vcpu_t *vcpu)
